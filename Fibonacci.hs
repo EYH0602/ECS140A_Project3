@@ -1,3 +1,5 @@
+module Fibonacci (nthFib, fib, fibLt) where
+
 nthFib :: Int -> Int
 nthFib 0 = 0
 nthFib 1 = 1
@@ -15,6 +17,3 @@ getFibs n xs bound
 
 fibLt :: Int -> [Int]
 fibLt = getFibs 0 []
-
-main :: IO ()
-main = print (fibLt 100)
