@@ -1,24 +1,19 @@
-module Match (match, matchStr) where
+module Match (matchStr, matchStrList) where
+
+match :: (Eq a) => a -> (a -> a -> Bool) -> [a] -> [a] -> Bool
+match _ _ [] [] = True
+match _ _ _ [] = False
+match _ _ [] _ = False
+match s f xs _
+  | [s] == xs = True
+match s f (x : x' : xs) (y : ys)
+  | s == x = match s f (x' : xs) (dropWhile (not . f x') (y : ys))
+match s f (x : xs) (y : ys)
+  | f x y = match s f xs ys
+  | otherwise = False
 
 matchStr :: String -> String -> Bool
-matchStr [] [] = True
-matchStr "*" _ = True
-matchStr _ [] = False
-matchStr [] _ = False
-matchStr xs@('*' : xs') ys = matchStr (reverse xs) (reverse ys)
-matchStr (x : xs) (y : ys)
-  | x == y = matchStr xs ys
-  | otherwise = False
+matchStr = match '*' (==)
 
-matchList :: [String] -> [String] -> Bool
-matchList [] [] = True
-matchList ["!"] _ = True
-matchList _ [] = False
-matchList [] _ = False
-matchList xs@("!" : xs') ys = matchList (reverse xs) (reverse ys)
-matchList (x : xs) (y : ys)
-  | x `matchStr` y = matchList xs ys
-  | otherwise = False
-
-match :: [String] -> [String] -> Bool
-match = matchList
+matchStrList :: [String] -> [String] -> Bool
+matchStrList = match "!" matchStr
