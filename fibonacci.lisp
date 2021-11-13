@@ -22,8 +22,8 @@
 (defun get-fibs (n xs bound)
   (let ((newFib (nth-fib n)))
     (if (< newFib bound)
-        (cons newFib (get-fibs (+ n 1) xs bound))
-        xs)))
+      xs
+      (cons newFib (get-fibs (+ n 1) xs bound)))))
 
 (defun fib-lt (n)
   (get-fibs 0 nil n))
