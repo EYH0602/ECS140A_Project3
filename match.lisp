@@ -26,7 +26,7 @@
   (cond
     ((null ys) t)
     ((null xs) nil)
-    ((eql (cons s nil) xs) t)
+    ((equal (cons s nil) xs) t)
     ((eql s (car xs))
       (and
         (any (lambda (x) (funcall f (nth 1 xs) x)) ys) 
@@ -35,11 +35,31 @@
     (t nil)))
 
 (defun matchStr (xs ys)
-  (match-base '* #'eql xs ys))
+  (match-base '* #'equal xs ys))
+
+(defun to-char-symbol-list (xs)
+  (mapcar #'intern (mapcar #'string (coerce (string-upcase (string xs)) 'list))))
 
 (defun match (xs ys)
-  (match-base '(!) #'matchStr xs ys))
+  (match-base '(!) #'matchStr (mapcar #'to-char-symbol-list xs) (mapcar #'to-char-symbol-list ys)))
 
 ; You may run the code and the output will be true.
-; (print (any (lambda (x) (eq x 's)) '(t h i s)))
-(print (matchStr '(*) '(t h i s)))
+; (print (match '(color apple red) '(color apple red)))
+; (print (match '(color apple red) '(color apple green)))
+; (print (match '(! table !) '(this table supports a block)))
+; (print (match '(this table !) '(this table supports a block)))
+; (print (match '(! brown) '(green red brown yellow)))
+; (print (match '(! brown) '(green red brown brown)))
+; (print (match '(red green ! blue) '(red green blue)))
+; (print (match '(red gr*n blue) '(red green blue)))
+; (print (match '(t* table is *n) '(this table is blue)))
+; (print (match '(color apple *) '(color apple red)))
+; (print (match '(color * red) '(color apple red)))
+; (print (match '(color * red) '(color apple green)))
+; (print (match '(color*red) '(color apple red)))
+; (print (match '(color ! * red) '(color apple red)))
+
+(print (mapcar #'to-char-symbol-list '(! table !)))
+
+; (let ((xs (to-char-symbol-list 'a*le)) (ys (to-char-symbol-list 'apple)))
+;   (print (matchStr xs ys)))
