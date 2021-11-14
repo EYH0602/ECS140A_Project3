@@ -1,5 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
-
 module Fibonacci (nthFib, fib, fibLt) where
 
 nthFib :: Int -> Int
@@ -19,14 +17,3 @@ getFibs n xs bound
 
 fibLt :: Int -> [Int]
 fibLt = getFibs 0 []
-
-
-fib' :: (Num a2, Integral a1) => a1 -> a2
-fib' 0 = 0
-fib' 1 = 1
-fib' n | even n         = f1 * (f1 + 2 * f2)
-      | n `mod` 4 == 1 = (2 * f1 + f2) * (2 * f1 - f2) + 2
-      | otherwise      = (2 * f1 + f2) * (2 * f1 - f2) - 2
-   where k = n `div` 2
-         f1 = fib' k
-         f2 = fib' (k-1)
