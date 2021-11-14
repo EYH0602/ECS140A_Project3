@@ -35,7 +35,7 @@
 ; helper function
 (defun get-fibs (n xs bound)
   (let ((newFib (nth-fib n)))
-    (if (< newFib bound)
+    (if (>= newFib bound)
         xs
         (cons newFib (get-fibs (+ n 1) xs bound)))))
 
@@ -43,4 +43,4 @@
   (get-fibs 0 nil n))
 
 (print (fib 9))
-(print (fib-lt 3))
+(print (fib-lt 100))
