@@ -26,5 +26,6 @@
 (defun fib-lt (n)
   (get-fibs 0 nil n))
 
+(print (nth-fib 9))
 (print (fib 9))
 (print (fib-lt 100))
