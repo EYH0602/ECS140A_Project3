@@ -22,4 +22,10 @@ matchStr :: String -> String -> Bool
 matchStr = match '*' (==)
 
 matchStrList :: [String] -> [String] -> Bool
-matchStrList = match "!" matchStr
+matchStrList xs = match "!" matchStr $ clean "!" xs
+
+clean :: Eq a => a -> [a] -> [a]
+clean _ [] = []
+clean p (x : xs)
+  | null xs = x : xs
+  | otherwise = if x == p && x == head xs then clean p xs else x : clean p xs
