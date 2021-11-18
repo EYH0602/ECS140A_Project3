@@ -30,26 +30,40 @@
 ; param ys: assertion
 (defun match-base (s f xs ys)
   (cond
+   ((and xs (null ys)) nil)
    ((null ys) t)
    ((null xs) nil)
    ((equal (cons s nil) xs) t)
    ((equal s (car xs))
     (and
      (any (lambda (x) (funcall f (nth 1 xs) x)) ys)
-     (match-base s f (cdr (cdr xs)) (drop (lambda (x) (not (funcall f (nth 1 xs) x))) ys))))
+     (match-base s f (cdr (cdr xs)) (drop-matched (nth 1 xs) f ys))))
    ((funcall f (car xs) (car ys)) (match-base s f (cdr xs) (cdr ys)))
    (t nil)))
 
+(defun drop-matched (comp f ys)
+  (if (equal '(*) comp)
+      (cdr ys)
+      (drop (lambda (x) (not (funcall f comp x))) ys)))
+
+; **abc****d -> *abc*d 
+(defun clean (p xs)
+  (cond
+   ((null xs) xs)
+   ((null (cdr xs)) xs)
+   ((and (equal (car xs) p) (equal (car xs) (car (cdr xs)))) (clean p (cdr xs)))
+   (t (cons (car xs) (clean p (cdr xs))))))
+
 (defun matchStr (xs ys)
-  (match-base '* #'equal xs ys))
+  (match-base '* #'equal (clean '* xs) (clean '* ys)))
 
 ; ABC -> (A B C)
 (defun to-char-symbol-list (xs)
   (mapcar #'intern (mapcar #'string (coerce (string-upcase (string xs)) 'list))))
 
 (defun match (xs ys)
-  (let ((xss (mapcar #'to-char-symbol-list xs))
-        (yss (mapcar #'to-char-symbol-list ys)))
+  (let ((xss (clean '(!) (mapcar #'to-char-symbol-list xs)))
+        (yss (clean '(!) (mapcar #'to-char-symbol-list ys))))
     (match-base '(!) #'matchStr xss yss)))
 
 
